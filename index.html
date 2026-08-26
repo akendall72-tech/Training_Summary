@@ -84,7 +84,7 @@
 <header>
   <h1>Training Summary Report &mdash; AGRI-SERVICE, LLC 2026</h1>
   <div class="subtitle">131 active employees, 33 technicians</div>
-  <div class="tab-bar"><button class="tab-btn active" data-tab="summary" onclick="switchTab('summary')">Summary</button><button class="tab-btn" data-tab="roster" onclick="switchTab('roster')">Roster</button><button class="tab-btn" data-tab="agco" onclick="switchTab('agco')">AGCO Credit Hours</button><button class="tab-btn" data-tab="epa609" onclick="switchTab('epa609')">609 Credit</button><button class="tab-btn" data-tab="ptx" onclick="switchTab('ptx')">PTx Attendance</button><button class="tab-btn" data-tab="forklift" onclick="switchTab('forklift')">Forklift Certification</button><button class="tab-btn" data-tab="location" onclick="switchTab('location')">Location Breakdown</button><button class="tab-btn" data-tab="planning" onclick="switchTab('planning')">Planning</button></div>
+  <div class="tab-bar"><button class="tab-btn active" data-tab="summary" onclick="switchTab('summary')">Summary</button><button class="tab-btn" data-tab="roster" onclick="switchTab('roster')">Roster</button><button class="tab-btn" data-tab="agco" onclick="switchTab('agco')">AGCO Credit Hours</button><button class="tab-btn" data-tab="epa609" onclick="switchTab('epa609')">609 Credit</button><button class="tab-btn" data-tab="ptx" onclick="switchTab('ptx')">PTx Attendance</button><button class="tab-btn" data-tab="forklift" onclick="switchTab('forklift')">Forklift Certification</button><button class="tab-btn" data-tab="location" onclick="switchTab('location')">Location Breakdown</button><button class="tab-btn" data-tab="planning" onclick="switchTab('planning')">Planning</button><button class="tab-btn" data-tab="calculator" onclick="switchTab('calculator')">Calculator</button></div>
 </header>
 <main>
   <div class="tab-panel active" id="tab-summary">
@@ -103,7 +103,7 @@
       <tr onclick="switchTab('ptx')"><td>PTx Attendance</td><td>All employees &mdash; attended a PTx in-person class or not</td></tr>
       <tr onclick="switchTab('forklift')"><td>Forklift Certification</td><td>All employees &mdash; certified or not, with date</td></tr>
       <tr onclick="switchTab('location')"><td>Location Breakdown</td><td>Click a store below to see that store's employees and 2026 classes (OLT, ILT, AGCO Training)</td></tr>
-      <tr onclick="switchTab('planning')"><td>Planning</td><td>AGCO Level 1&ndash;6 progress by technician, with next-needed level and legacy flags</td></tr>
+      <tr onclick="switchTab('planning')"><td>Planning</td><td>AGCO Level 1&ndash;6 progress by technician, with next-needed level and legacy flags</td></tr><tr onclick="switchTab('calculator')"><td>Calculator</td><td>Check off technicians planned to reach 24+ AGCO hours and see the projected percentage update live</td></tr>
     </table></div>
   </div>
   <div class="tab-panel" id="tab-roster">
@@ -258,6 +258,28 @@
       </table>
     </div>
   </div>
+  <div class="tab-panel" id="tab-calculator">
+    <h2 class="section-title">Calculator &mdash; 24-Hr AGCO Training Projection</h2>
+    <div class="note">Check the box next to any technician who is planned to reach 24+ AGCO Training Hours. The projected percentage recalculates live below. Your checks are saved in this browser only (via local storage) &mdash; they don't change the official Summary KPI or sync to other devices/browsers.</div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-bottom:20px;">
+      <div class="kpi-card"><div class="kpi-title">Currently at 24+ Hrs</div><div class="kpi-value">21.2%</div><div class="kpi-sub">7 of 33 technicians</div></div>
+      <div class="kpi-card" style="border-top-color:#2C6B4D;"><div class="kpi-title">Projected (Current + Planned)</div><div class="kpi-value" id="calc-projected-value" style="color:#2C6B4D;">21.2%</div><div class="kpi-sub" id="calc-projected-sub">7 of 33 technicians (0 planned)</div></div>
+    </div>
+    <div style="margin-bottom:14px;"><button class="store-btn" onclick="calcReset()">Clear all planned checks</button></div>
+    <div class="table-wrap">
+      <table class="data-table" id="tbl-calculator">
+        <thead><tr>
+          <th onclick="sortTable('tbl-calculator',0)">First Name<span class="sort-arrow"></span></th>
+          <th onclick="sortTable('tbl-calculator',1)">Last Name<span class="sort-arrow"></span></th>
+          <th onclick="sortTable('tbl-calculator',2)">Location<span class="sort-arrow"></span></th>
+          <th onclick="sortTable('tbl-calculator',3)">Job<span class="sort-arrow"></span></th>
+          <th onclick="sortTable('tbl-calculator',4)">24+ Hrs Now?<span class="sort-arrow"></span></th>
+          <th style="text-align:center;">Planned?</th>
+        </tr></thead>
+        <tbody id="calc-tbody"><tr><td>Jose</td><td>Figueroa-Gomez</td><td>Blackfoot</td><td>4065 - Technician Journeyman</td><td data-sort='1'><span class="badge yes">Yes</span></td><td style="text-align:center;"><input type="checkbox" checked disabled title="Already has 24+ hrs — counted in the current total"></td></tr><tr><td>Dakota</td><td>Gilbert</td><td>Blackfoot</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="dakota-gilbert" onchange="calcRecompute()"></td></tr><tr><td>Anthony</td><td>Groff</td><td>Blackfoot</td><td>4050 - Technician Expert</td><td data-sort='1'><span class="badge yes">Yes</span></td><td style="text-align:center;"><input type="checkbox" checked disabled title="Already has 24+ hrs — counted in the current total"></td></tr><tr><td>Jaime</td><td>Martinez</td><td>Blackfoot</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="jaime-martinez" onchange="calcRecompute()"></td></tr><tr><td>George</td><td>Upton</td><td>Blackfoot</td><td>4065 - Technician Journeyman</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="george-upton" onchange="calcRecompute()"></td></tr><tr><td>Logan</td><td>Buck</td><td>Heyburn</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="logan-buck" onchange="calcRecompute()"></td></tr><tr><td>Mike</td><td>Kincaid</td><td>Heyburn</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="mike-kincaid" onchange="calcRecompute()"></td></tr><tr><td>Darius</td><td>Maxfield</td><td>Heyburn</td><td>4050 - Technician Expert</td><td data-sort='1'><span class="badge yes">Yes</span></td><td style="text-align:center;"><input type="checkbox" checked disabled title="Already has 24+ hrs — counted in the current total"></td></tr><tr><td>Kevin</td><td>Orton</td><td>Heyburn</td><td>4070 - Technician Master</td><td data-sort='1'><span class="badge yes">Yes</span></td><td style="text-align:center;"><input type="checkbox" checked disabled title="Already has 24+ hrs — counted in the current total"></td></tr><tr><td>Patrick</td><td>Anderson</td><td>Marsing</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="patrick-anderson" onchange="calcRecompute()"></td></tr><tr><td>Anthony</td><td>Sugai</td><td>Marsing</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="anthony-sugai" onchange="calcRecompute()"></td></tr><tr><td>Patrick</td><td>Swenson</td><td>Marsing</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="patrick-swenson" onchange="calcRecompute()"></td></tr><tr><td>Aiden</td><td>Carver</td><td>Moses Lake</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="aiden-carver" onchange="calcRecompute()"></td></tr><tr><td>Simon</td><td>Castillo</td><td>Moses Lake</td><td>4065 - Technician Journeyman</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="simon-castillo" onchange="calcRecompute()"></td></tr><tr><td>Kelly</td><td>Dub</td><td>Moses Lake</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="kelly-dub" onchange="calcRecompute()"></td></tr><tr><td>Rick</td><td>Rosman</td><td>Moses Lake</td><td>4050 - Technician Expert</td><td data-sort='1'><span class="badge yes">Yes</span></td><td style="text-align:center;"><input type="checkbox" checked disabled title="Already has 24+ hrs — counted in the current total"></td></tr><tr><td>James</td><td>Bruinekool</td><td>Pasco</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="james-bruinekool" onchange="calcRecompute()"></td></tr><tr><td>Robin</td><td>Crowner</td><td>Pasco</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="robin-crowner" onchange="calcRecompute()"></td></tr><tr><td>Jeffrey</td><td>Gardiner</td><td>Pasco</td><td>4065 - Technician Journeyman</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="jeffrey-gardiner" onchange="calcRecompute()"></td></tr><tr><td>Ken</td><td>McNall</td><td>Pasco</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="ken-mcnall" onchange="calcRecompute()"></td></tr><tr><td>Jaycob</td><td>Scott</td><td>Pasco</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="jaycob-scott" onchange="calcRecompute()"></td></tr><tr><td>Brad</td><td>Trumpy</td><td>Pasco</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="brad-trumpy" onchange="calcRecompute()"></td></tr><tr><td>Victor</td><td>Valencia Villarreal</td><td>Pasco</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="victor-valencia-villarreal" onchange="calcRecompute()"></td></tr><tr><td>Kevin</td><td>Willman</td><td>Pasco</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="kevin-willman" onchange="calcRecompute()"></td></tr><tr><td>Chris</td><td>Dolcini</td><td>Sugar City</td><td>4065 - Technician Journeyman</td><td data-sort='1'><span class="badge yes">Yes</span></td><td style="text-align:center;"><input type="checkbox" checked disabled title="Already has 24+ hrs — counted in the current total"></td></tr><tr><td>Zane</td><td>Lemmon</td><td>Sugar City</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="zane-lemmon" onchange="calcRecompute()"></td></tr><tr><td>John</td><td>Scafe</td><td>Sugar City</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="john-scafe" onchange="calcRecompute()"></td></tr><tr><td>Jason</td><td>Weimer</td><td>Sugar City</td><td>4065 - Technician Journeyman</td><td data-sort='1'><span class="badge yes">Yes</span></td><td style="text-align:center;"><input type="checkbox" checked disabled title="Already has 24+ hrs — counted in the current total"></td></tr><tr><td>Lupe</td><td>Alvarado</td><td>Twin Falls</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="lupe-alvarado" onchange="calcRecompute()"></td></tr><tr><td>Mark</td><td>Coriell</td><td>Twin Falls</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="mark-coriell" onchange="calcRecompute()"></td></tr><tr><td>Chayse</td><td>Hanson</td><td>Twin Falls</td><td>4070 - Technician Master</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="chayse-hanson" onchange="calcRecompute()"></td></tr><tr><td>Terry</td><td>Hanson</td><td>Twin Falls</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="terry-hanson" onchange="calcRecompute()"></td></tr><tr><td>Lance</td><td>Walker</td><td>Twin Falls</td><td>4050 - Technician Expert</td><td data-sort='0'><span class="badge no">No</span></td><td style="text-align:center;"><input type="checkbox" class="calc-checkbox" data-key="lance-walker" onchange="calcRecompute()"></td></tr></tbody>
+      </table>
+    </div>
+  </div>
 </main>
 <footer>AGRI-SERVICE, LLC &mdash; Training Summary Report 2026 &mdash; generated 2026-08-18</footer>
 <script>
@@ -322,5 +344,38 @@ function planningApplyFilters() {
     sr.style.display = any ? '' : 'none';
   });
 }
+var CALC_TOTAL_TECHS = 33;
+var CALC_CURRENT_YES = 7;
+var CALC_STORAGE_KEY = 'agriTrainingCalc_2026-08';
+function calcLoadState() {
+  try { var raw = localStorage.getItem(CALC_STORAGE_KEY); return raw ? JSON.parse(raw) : []; }
+  catch(e) { return []; }
+}
+function calcSaveState(keys) {
+  try { localStorage.setItem(CALC_STORAGE_KEY, JSON.stringify(keys)); } catch(e) {}
+}
+function calcRecompute() {
+  var checked = [];
+  document.querySelectorAll('.calc-checkbox:checked').forEach(function(cb){ checked.push(cb.dataset.key); });
+  calcSaveState(checked);
+  var projected = CALC_CURRENT_YES + checked.length;
+  var pct = CALC_TOTAL_TECHS ? Math.round((projected / CALC_TOTAL_TECHS) * 1000) / 10 : 0;
+  document.getElementById('calc-projected-value').textContent = pct + '%';
+  document.getElementById('calc-projected-sub').textContent = projected + ' of ' + CALC_TOTAL_TECHS + ' technicians (' + checked.length + ' planned)';
+}
+function calcReset() {
+  document.querySelectorAll('.calc-checkbox').forEach(function(cb){ cb.checked = false; });
+  calcSaveState([]);
+  calcRecompute();
+}
+function calcInit() {
+  var saved = calcLoadState();
+  saved.forEach(function(key) {
+    var cb = document.querySelector('.calc-checkbox[data-key="'+key+'"]');
+    if (cb) cb.checked = true;
+  });
+  calcRecompute();
+}
+document.addEventListener('DOMContentLoaded', calcInit);
 </script>
 </body></html>
